@@ -14,6 +14,7 @@
 	</main>
 	<footer></footer>
 	<script>
+		// 1. 初始化数据
 		var keys = {
 			'0': {0:'q',1:'w',2:'e',3:'r',4:'t',5:'y',6:'u',7:'i',8:'o',9:'p',length:10},
 			'1': {0:'a',1:'s',2:'d',3:'f',4:'g',5:'h',6:'j',7:'k',8:'l',length:9},
@@ -26,35 +27,46 @@
 			'w': 'weibo.com',
 			'e': 'ele.me',
 			'r': 'renren.com',
-			't': 'tianya.com',
+			't': 'tianya.cn',
 			'y': 'youtube.com',
-			'u': 'uc.com',
+			'u': 'uc.cn',
 			'i': 'iqiyi.com',
 			'o': 'opera.com',
 			'p': undefined,
-			'a': 'acfun.tv',
+			'a': 'acfun.cn',
 			's': 'sohu.com',
 			'z': 'zhihu.com',
-			'm': 'www.mcdonalds.com.cn'
+			'm': 'www.mcdonalds.com.cn',
 		}
 		//取出 localStorage 中的 uuu 对应的 hash
-		var hashInLocalStorage = JSON.parse(localStorage.getItem('uuu') || 'null')
+		var hashInLocalStorage = getFromLocalStorage('uuu')
 		if(hashInLocalStorage){
 			hash = hashInLocalStorage
 		}
+		
+
+		function tag(tagName,attributes){
+			var element = document.createElement(tagName)
+			for(var key in attributes){ //key 为 className,id,textContent
+				element[key] = attributes[key]
+
+			}
+			return element
+		}
+		// 2. 生成键盘
 		//遍历 keys， 生成 kbd 标签
-		index = 0
+		var index = 0
 		while(index< keys['length']){
-			divxxx = document.createElement('div')
-			divxxx.className = 'row'
+			var divxxx = tag('div',{className: 'row'})
+			
 	    	mainxxx.appendChild(divxxx)
-	    	row = keys[index] //第一个数组 第二个数组 第三个数组
+	    	var row = keys[index] //第一个数组 第二个数组 第三个数组
 
-	    	index2 = 0
+	    	var index2 = 0
 	    	while(index2< row['length']){  // 0~9   0~8   0~6
-	    		kbdxxx = document.createElement('kbd')
+	    		var kbdxxx = tag('kbd')
 
-	    		span = document.createElement('span')
+	    		var span = tag('span')
 
 	    		span.textContent = row[index2]
 
@@ -63,24 +75,46 @@
 
 	    		kbdxxx.className = 'key'
 
-	    		buttonX = document.createElement('button')
+	    		var buttonX = tag('button')
 
 	    		buttonX.textContent = '编辑'
 
 	    		buttonX.id = row[index2]
-	    		imgXX = document.createElement('img')
 
-	    		imgXX.src = 'http://'+hash[row[index2]] + '/favicon.ico'
+	    		var imgXX = tag('img')
+
+
+	    		if(hash[row[index2]]){
+	    			imgXX.src = 'http://'+hash[row[index2]] + '/favicon.ico'
+	    		}else{
+	    			imgXX.src = '//i.loli.net/2019/02/27/5c76625126a1d.png'
+	    		}
+	    		imgXX.onerror = function(xxx){
+	    			xxx.target.src = '//i.loli.net/2019/02/27/5c76625126a1d.png'
+	    		}
+	    		
+	    		
 
 
 	    		buttonX.onclick = function(xzkjcnxlkcjlk){
 
 	    			// xzkjcnxlkcjlk['target'] 就是用户点击的元素
-	    			key = (xzkjcnxlkcjlk['target']['id']) //q w e r t
-	    			x = prompt('给我一个网址') // qq.com
+
+	    			var button2 = xzkjcnxlkcjlk['target']
+
+	    			var img2 = button2.previousSibling
+
+	    			var key = button2['id'] //q w e r t
+	    			var x = prompt('给我一个网址') // qq.com
 	    			hash[key] = x  //hash 变更
+
+	    			img2.src = 'http://'+x + '/favicon.ico'
+	    			img2.onerror = function(xxx){
+	    				xxx.target.src = '//i.loli.net/2019/02/27/5c76625126a1d.png'
+	    		}
+	    		
 	    			localStorage.setItem('uuu',JSON.stringify(hash))
-	    			console.log(hash)
+	    			
 
 	    		}
 	    		kbdxxx.appendChild(imgXX)
@@ -91,15 +125,18 @@
 	    	
 	    	index = index+1
 		}
-	    
+	    // 3. 监听键盘
 	    document.onkeypress = function(xzkjcnxlkcjlk){
 	    	
-	    	key = xzkjcnxlkcjlk['key']
-	    	website = hash[key]
+	    	var key = xzkjcnxlkcjlk['key']
+	    	var website = hash[key]
 	    	console.log(website)
 	    	location.href = 'http://'+website
 	    }	
-	    	
+	    function getFromLocalStorage(name){
+			return JSON.parse(localStorage.getItem(name) || 'null')
+		}	
+
 	</script>
 </body>
 </html>
